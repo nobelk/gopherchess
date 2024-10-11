@@ -74,6 +74,15 @@ const (
 	h1 = iota
 )
 
+const (
+	white = iota
+	black = iota
+)
+
+const not_ab_file = 0
+
+var pawn_attacks [2][64]uint
+
 type Bitboard struct {
 	value uint64
 }
@@ -94,4 +103,20 @@ func (board *Bitboard) PopBit(square uint) {
 	if board.value&(1<<square) != 0 {
 		board.value ^= (1 << square)
 	}
+}
+
+func MaskPawnAttacks(square uint, side uint) uint64 {
+	var attacks uint64 = 0
+	var board = new(Bitboard)
+
+	// set piece on board
+	board.SetBit(square)
+
+	if side == white {
+		attacks |= (board.value >> 7)
+	} else { // black pawns
+		attacks |= (board.value << 9)
+	}
+
+	return attacks
 }
